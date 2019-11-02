@@ -1,0 +1,125 @@
+
+
+
+
+
+#language-list li {
+
+	cursor: pointer;
+
+	color: #cacaca;
+	padding: 3px 7px;
+}
+
+#language-list li span.text {
+
+	text-decoration: line-through;
+}
+
+#language-list li.active {
+
+	/*color: #333;*/
+	background-color: #f6f6f6;
+	border-right: 5px solid #555;
+}
+
+#language-list li.checked {
+
+	color: #555;
+}
+
+#language-list li.checked span.text {
+
+	text-decoration: none;
+}
+
+#language-list li span.checked, 
+#language-list li.checked span.unchecked {
+
+	display: none;
+}
+
+#language-list li.checked span, 
+#language-list li span.unchecked {
+
+	display: inline;
+}
+
+#language-list li:hover {
+
+	color: #999;
+}
+
+#language-list li:active {
+
+	color: #555;
+}
+
+#language-list input {
+
+	display: none;
+}
+
+
+.mouse-pointer {
+
+	cursor: pointer;
+}
+
+tr[data-level="2"] {
+
+	border-left: 100px solid #eee;
+	/*border-right: 10px solid #eee;*/
+}
+
+tr[data-level="2"] td {
+
+	padding-top: 4px !important;
+	padding-bottom: : 4px !important;
+}
+
+
+img.flag{
+
+	height: 16px;
+	width: auto;
+}
+
+img.flag-sm {
+
+	height: 13px;
+}
+
+img.flag-xs {
+
+	height: 10px;
+}
+
+.img-thumbnail {
+
+	display: inline-block;
+	position: relative;
+}
+
+.img-thumbnail img {
+
+	max-width: 200px;
+	max-height: 200px;
+}
+
+.img-thumbnail .remove {
+
+	display: none;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	color: #f00;
+	background-color: rgba(255,255,255,0.35);
+	padding: 2px;
+	padding-bottom: 1px;
+	border-radius: 3px
+}
+.img-thumbnail:hover .remove {
+
+	display: block;
+}
