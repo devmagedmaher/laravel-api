@@ -12,14 +12,14 @@ class CategoryResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request, $lang)
+    public function toArray($request)
     {
         return [
 
             'id' => $this->id,
-            'name' => $this->lang($lang)->name,
-            'description' => $this->lang($lang)->description,
-            'parent_id' => $this->parent_id,
+            'name' => $this->details->first()->name,
+            'description' => $this->details->first()->description,
+            'children' => self::collection($this->children),
 
         ];
     }

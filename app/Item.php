@@ -57,8 +57,8 @@ class Item extends Model
 	 * 
 	 * @return Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function category() {
-
+	public function category() 
+	{
 		return $this->belongsTo(Category::class);
 	}
 
@@ -67,9 +67,24 @@ class Item extends Model
 	 * 
 	 * @return Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function getCategoryNameAttribute() {
-
+	public function getCategoryNameAttribute() 
+	{
 		return $this->category->name;
+	}
+
+	/**
+	 * Relationship to categories table
+	 * 
+	 * @return Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function getImagesArrayAttribute() 
+	{
+		// return ['test'];
+		return $this->images->pluck('name')->map(function($image) {
+
+			return url( 'storage/' . $image );
+			
+		})->toArray();
 	}
 
 	/**

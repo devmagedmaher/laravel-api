@@ -19,10 +19,9 @@ Route::post('register', 'Api\RegisterController@register');
 
 
 
-Route::get('categories/{language?}', 'Api\CategoryController@index')->name('category.view');
+Route::get('categories', 'Api\CategoryController@index')->name('category.view');
 
 
 
-Route::resource('item', 'Api\ItemController');
 Route::get('items', 'Api\ItemController@index')->name('item.view');
 

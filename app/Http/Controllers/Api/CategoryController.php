@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource as Resource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource as Resource;
 use App\Category;
 use App\Language;
 
@@ -15,9 +15,9 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(language $language)
+    public function index()
     {
-        return Resource::collection(Category::all(), $lang->id) or ['error' => true];
+        return Resource::collection(Category::parents());
     }
 
     /**
