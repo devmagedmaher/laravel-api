@@ -23,8 +23,8 @@ class CreateLanguagesTable extends Migration
             $table->timestamps();
         });
 
-        Language::add('en', 'English');
-        Language::add('ar', 'العربية');
+        // Language::add('en', 'English');
+        // Language::add('ar', 'العربية');
     }
 
     /**
