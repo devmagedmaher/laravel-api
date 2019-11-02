@@ -82,8 +82,8 @@ class Item extends Model
 		// return ['test'];
 		return $this->images->pluck('name')->map(function($image) {
 
-			return url( 'storage/' . $image );
-			
+			return url( 'storage/items/' . $image );
+
 		})->toArray();
 	}
 
