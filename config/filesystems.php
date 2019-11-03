@@ -57,11 +57,12 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
+            'key' => env('AWS_ACCESS_KEY_ID', 'AKIASHJXCY7VHYR534MV'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY', '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'),
+            'region' => env('AWS_DEFAULT_REGION', 'eu-west-1'),
+            'bucket' => env('AWS_BUCKET', 'magedmaher-testapi2'),
+            'url' => env('AWS_URL', 'http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com'),
+            'visibility' => 'public',
         ],
 
     ],

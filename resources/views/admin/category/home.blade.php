@@ -18,6 +18,7 @@
 		            <tr>
 		                <th>name</th>
 		                <th>items</th>
+		                <th>image</th>
 		                <th>control</th>
 		                <th>languages</th>
 		            </tr>

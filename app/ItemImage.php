@@ -41,12 +41,12 @@ class ItemImage extends Model
 	 */
 	public function trashImage() 
 	{
-		$public = 'public/items/';
+		$public = 'items/';
 		$trash = 'trash/items/';
 
-		if (Storage::exists($public . $this->name))
+		if (Storage::disk('s3')->exists($public . $this->name))
 		{
-	        Storage::move($public . $this->name, $trash . $this->name);
+	        Storage::disk('s3')->move($public . $this->name, $trash . $this->name);
 		}
 	}
 }

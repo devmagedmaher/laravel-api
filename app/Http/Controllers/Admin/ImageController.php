@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Item;
 use App\ItemImage;
 use Validator;
 
 class ImageController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      *
@@ -67,9 +69,9 @@ class ImageController extends Controller
         {
             if ($image->validated)
             {
-                $image_name = time() . rand(100, 999) . $item->name . '.' . $image->getClientOriginalExtension();
+                $image_name = time() . rand(100, 999) . substr($item->name, 0, 20) . '.' . $image->getClientOriginalExtension();
 
-                $upload = $image->storeAs('public/items', $image_name);
+                $upload = $image->storeAs('items', $image_name, 's3');
 
                 if ($upload)
                 {

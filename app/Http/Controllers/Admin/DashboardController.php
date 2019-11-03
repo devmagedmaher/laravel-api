@@ -7,16 +7,7 @@ use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
-    /**
-     * Implementing middleware auth
-     * 
-     * @return void
-     */
-    public function __construct() 
-    {
-        $this->middleware('auth');
-    }
-
+    
     /**
      * Display a listing of the resource.
      *

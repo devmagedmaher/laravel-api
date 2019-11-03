@@ -10,15 +10,6 @@ use App\Language;
 
 class CategoryController extends Controller
 {
-    /**
-     * Implementing middleware auth
-     * 
-     * @return void
-     */
-    public function __construct() 
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
@@ -63,12 +54,28 @@ class CategoryController extends Controller
             'name.*' => 'required|string|min:3',
             'description.*' => 'required|string|min:10',
             'parent' => 'nullable|numeric',
+            'image' => 'nullable|bail|image|mimes:jpg,jpgeg,png|max:500',
 
         ]);
 
+        $image = $request->image ? true : false;
+        $imageName = null;
+
+        if ($image) 
+        {
+            $imageName = time(). rand(100,900) . substr($request->name['en'], 0, 20) . '.' . $request->image->getClientOriginalExtension();
+            $upload = $request->image->storeAs('categories', $imageName, 's3');
+
+            if (!$upload) 
+            {
+                return back()->withErrors(['image' => 'File upload error.']);
+            }
+        }
+
         $category = Category::create([
 
-            'parent_id' => $request->parent
+            'parent_id' => $request->parent,
+            'image' => $imageName,
 
         ]);
 
@@ -134,10 +141,27 @@ class CategoryController extends Controller
             'name.*' => 'required|string|min:3',
             'description.*' => 'required|string|min:10',
             'parent' => 'nullable|numeric',
+            'image' => 'nullable|bail|image|mimes:jpg,jpgeg,png|max:500',
 
         ]);
 
+        $image = $request->image ? true : false;
+        $imageName = null;
+
+        if ($image) 
+        {
+            $imageName = time(). rand(100,900) . substr($category->name, 0, 20) . '.' . $request->image->getClientOriginalExtension();
+
+            $upload = $request->image->storeAs('categories', $imageName, 's3');
+
+            if (!$upload) 
+            {
+                return back()->withErrors(['image' => 'File upload error.']);
+            }
+        }
+
         $category->parent_id = $request->parent;
+        $category->image = $imageName;
         $category->save();
 
         foreach ($request->language as $k => $id) {
@@ -167,6 +191,33 @@ class CategoryController extends Controller
         }
 
         $request->session()->flash('status', 'success');
+
+        return back();
+    }
+
+    /**
+     * upload image
+     * 
+     * @return \Illluminate\Http\Response
+     */
+    public function upload(Request $request, Category $category)
+    {
+        $request->validate([
+
+            'image' => 'required|bail|image|mimes:jpg,jpeg,png|max:500',
+
+        ]);
+
+        $imageName = time(). rand(100,900) . substr($category->name, 0, 20) . '.' . $request->image->getClientOriginalExtension();
+        $upload = $request->image->storeAs('categories', $imageName, 's3');
+
+        if (!$upload) 
+        {
+            return redirect()->route('admin.category.edit', ['category' => $category->id])->withErrors(['image' => 'File upload error.']);
+        }
+
+        $category->image = $imageName;
+        $category->save();
 
         return back();
     }

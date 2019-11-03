@@ -118,12 +118,12 @@
                             <i class="fa fa-user fa-fw"></i> {{ auth()->user()->name }} <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                            </li>
-                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                            </li>
+                            <li><a href="{{ route('admin.user.profile') }}"><i class="fa fa-user fa-fw"></i> Profile</a></li>
+                            {{-- <li><a href="#"><i class="fa fa-gear fa-fw"></i> Edit Profile</a></li> --}}
                             <li class="divider"></li>
-                            <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            <li>
+                                <a href="#" class="submit-next-form"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <form action="{{ route('logout') }}" method="post" style="display: none"> @csrf </form>
                             </li>
                         </ul>
                     </li>

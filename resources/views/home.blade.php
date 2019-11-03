@@ -14,7 +14,10 @@
                         </div>
                     @endif
 
-                    You are logged in!.. Go to <a href="{{ route('admin.dashboard')}}">Dashboard</a>.
+                    You are logged in!.. 
+                    @admin
+                        Go to <a href="{{ route('admin.dashboard')}}">Dashboard</a>.
+                    @endadmin
                 </div>
             </div>
         </div>

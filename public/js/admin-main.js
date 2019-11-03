@@ -4,10 +4,20 @@ $(function(){
 
 	'use strict';
 
+	// toggle show/hide next div element
+	$('.toggle-next-element').on('click', function(e) {
+		console.log('test');
+		e.preventDefault();
+
+		let target = $(this).next();
+
+		target.toggle();
+	});
 
 	// submit the next form in the dom tree 
 	$('.submit-next-form').on('click', function(e) {
-
+		e.preventDefault();
+		
 		let target = $(this).next('form');
 		let danger = $(this).hasClass('btn-danger');
 

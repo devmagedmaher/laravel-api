@@ -19,7 +19,7 @@ class Category extends Model
 	 */
 	protected $fillable = [
 
-		'parent_id', 
+		'parent_id', 'image', 
 
 	];
 
@@ -51,6 +51,17 @@ class Category extends Model
 	public function hasChildren() 
 	{
 		return $this->children->count() ? true : false;
+	}
+
+	/**
+	 * Check if category has sub categories
+	 * 
+	 * @return boolean
+	 **/
+	public function hasImage() 
+	{
+		// dd($this);
+		return $this->image ? true : false;
 	}
 
 	/**

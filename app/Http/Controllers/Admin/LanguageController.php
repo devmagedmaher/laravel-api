@@ -10,16 +10,6 @@ use Validator;
 
 class LanguageController extends Controller
 {
-    /**
-     * Implementing middleware auth
-     * 
-     * @return void
-     */
-    public function __construct() 
-    {
-        $this->middleware('auth');
-    }
-
 
     /**
      * Display a listing of the resource.
@@ -67,7 +57,7 @@ class LanguageController extends Controller
         if ($image) 
         {
             $imageName = time(). rand(100,900) . $request->code . '.png';
-            $upload = $request->image->storeAs('public/languages', $imageName);
+            $upload = $request->image->storeAs('languages', $imageName, 's3');
 
             if (!$upload) 
             {

@@ -20,7 +20,7 @@
                 ])
             </div>
             <div class="col-sm-9">
-                <form action="{{ route('admin.category.add') }}" method="post" role="form">
+                <form action="{{ route('admin.category.add') }}" method="post" role="form" enctype="multipart/form-data">
                 	@csrf
                     <div class="tab-content">
                     @foreach($langs as $lang)
@@ -50,11 +50,16 @@
                     @endforeach
                     </div>
                     <hr>
-                    <div class="form-group {{ $errors->has('parent') ? 'has-error' : ''}}">
+                    <div class="form-group @error('image', 'has-error')">
+                        <label class="control-label" for="LanguageImage">Image</label>
+                        <input type="file" name="image" class="file-control" id="LanguageImage">
+                        @errorView(['field' => 'image'])
+                    </div>
+                    {{-- <div class="form-group {{ $errors->has('parent') ? 'has-error' : ''}}">
                     	<label for="ParentCategory" class="control-label">Parent (optional)</label>
                         @include('admin.category.parent-select', ['categories' => $categories])
                         @errorView(['field' => 'parent'])
-                    </div>
+                    </div> --}}
                     @if (session('status'))
                         @successView(['msg' => 'category has been added successfully.'])
                 	@endif

@@ -17,7 +17,7 @@
         @endif
     </div>
     <div class="panel-body">
-        <form action="{{ route('admin.category.update', ['category' => $category->id]) }}" method="post" role="form">
+        <form action="{{ route('admin.category.update', ['category' => $category->id]) }}" method="post" role="form" enctype="multipart/form-data">
 
             @method('PATCH')
             @csrf
@@ -66,7 +66,12 @@
                         @endforeach
                     </div>
                     <hr>
-                    <div class="form-group {{ $errors->has('parent') ? 'has-error' : ''}}">
+                    <div class="form-group @error('image', 'has-error')">
+                        <label class="control-label" for="LanguageImage">Image</label>
+                        <input type="file" name="image" class="file-control" id="LanguageImage">
+                        @errorView(['field' => 'image'])
+                    </div>
+                    {{-- <div class="form-group {{ $errors->has('parent') ? 'has-error' : ''}}">
                         <label for="ParentCategory" class="control-label">Parent Category</label>
                         <select class="form-control" id="ParentCategory" name="parent">
                             <option value="" {{ old('parent') ? '' : 'selected' }}>Choose Parent Category (optional)</option>
@@ -87,7 +92,7 @@
                         @if ($errors->has('parent'))
                             <span id="helpBlock2" class="help-block">{{ $errors->get('parent')[0] }}</span>
                         @endif
-                    </div>
+                    </div> --}}
                     @if (session('status'))
                         <div class="alert alert-success alert-dismissible" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">

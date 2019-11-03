@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class ItemImageController extends Controller
+class UserController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -42,12 +41,11 @@ class ItemImageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        //
+        return view('admin.user.show');
     }
 
     /**
@@ -58,7 +56,7 @@ class ItemImageController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('admin.user.edit');
     }
 
     /**

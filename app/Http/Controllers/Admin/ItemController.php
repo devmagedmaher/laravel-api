@@ -11,16 +11,6 @@ use App\Language;
 
 class ItemController extends Controller
 {
-    /**
-     * Implementing middleware auth
-     * 
-     * @return void
-     */
-    public function __construct() 
-    {
-        $this->middleware('auth');
-    }
-
 
     /**
      * Display a listing of the resource.
