@@ -32,7 +32,7 @@
                 <label class="control-label" for="LanguageImage">Language Image</label>
                 @if ($language->hasImage())
                     <sub>
-                        (current image: <img src="{{ url("storage/languages/$language->image") }}" title="{{ $language->name }}" class="flag flag-sm"> )
+                        (current image: <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $language->image }}" title="{{ $language->name }}" class="flag flag-sm"> )
                     </sub>
                 @endif
                 <input type="file" name="image" class="form-control" id="LanguageImage">

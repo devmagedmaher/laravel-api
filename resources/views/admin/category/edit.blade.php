@@ -162,7 +162,7 @@
                         <td>
                         @foreach ($child->languages as $language)
                             @if ($language->image)
-                                <img src="{{ asset('upload/languages/'. $language->image) }}" alt="{{ $language->code }}" title="{{ $language->name }}"> 
+                                <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $language->image }}" alt="{{ $language->code }}" title="{{ $language->name }}"> 
                             @else
                                 [{{ $language->code }}]
                             @endif

@@ -207,6 +207,24 @@ class Category extends Model
 			$detail->delete();
 		}
 		
+		$this->trashImage();		
+
 		$this->delete();
+	}
+
+	/**
+	 * move image to trash directory
+	 * 
+	 * @return boolean
+	 */
+	public function trashImage()
+	{
+		$public = "categories";
+		$trash = "trash/categories";
+
+		if (Storage::exists($public . $this->image))
+		{
+			Storage::move($public . $this->image, $trash . $this->image);
+		}
 	}
 }

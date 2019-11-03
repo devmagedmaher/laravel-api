@@ -109,8 +109,8 @@ class Language extends Model
 	 */
 	public function trashImage()
 	{
-		$public = "public/languages/";
-		$trash = "trash/languages/";
+		$public = "languages";
+		$trash = "trash/languages";
 
 		if (Storage::exists($public . $this->image))
 		{

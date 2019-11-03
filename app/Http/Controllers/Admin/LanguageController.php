@@ -117,11 +117,12 @@ class LanguageController extends Controller
         ]);
 
         $image = $request->image ? true : false;
+        $imageName = null;
 
         if ($image) 
         {
             $imageName = time(). rand(100,900) . $request->code . '.png';
-            $upload = $request->image->storeAs('public/languages', $imageName);
+            $upload = $request->image->storeAs('languages', $imageName, 's3');
 
             if (!$upload) 
             {
@@ -159,7 +160,7 @@ class LanguageController extends Controller
         }
 
         $imageName = time() . rand(100,900) . $language->code . '.png';
-        $upload = $request->image->storeAs('public/languages', $imageName);
+        $upload = $request->image->storeAs('languages', $imageName, 's3');
 
         if (!$upload) 
         {
