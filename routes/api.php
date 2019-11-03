@@ -13,15 +13,22 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/', function() {
+	return view('api.docs');
+});
 
-Route::get('users', 'Api\UserController@index');
-Route::post('register', 'Api\RegisterController@register');
+Route::post('register', 'Api\RegisterController@index');
+Route::post('login', 'Api\LoginController@index');
 
+Route::post('user/{user}/edit', 'Api\UserController@edit');
+Route::post('user/{user}/upload', 'Api\UserController@upload');
 
+Route::get('categories/{language?}', 'Api\CategoryController@index');
 
-Route::get('categories', 'Api\CategoryController@index')->name('category.view');
+Route::get('items/{category}/{language?}', 'Api\ItemController@index');
+Route::get('item/{item}/{language?}', 'Api\ItemController@show');
 
-
-
-Route::get('items', 'Api\ItemController@index')->name('item.view');
+Route::get('favorites/{language?}', 'Api\FavoriteController@index');
+Route::post('favorite/add/{item}', 'Api\FavoriteController@store');
+Route::post('favorite/remove/{item}', 'Api\FavoriteController@destroy');
 

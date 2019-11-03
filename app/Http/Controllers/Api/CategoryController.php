@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource as Resource;
 use App\Category;
@@ -15,9 +16,47 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($lang_code = 'en')
     {
-        return Resource::collection(Category::parents());
+        $language = Language::where('code', $lang_code)->first();
+
+        if (!$language) 
+        {
+            $json['msg'] = 'Incorrect Language provieded.';
+            $json['status'] = false;
+            $json['result'] = [];
+
+            return response()->json($json);
+        }
+
+        $categories = Category::parents();
+
+        $json['msg'] = 'Categories retrieved successfully.';
+        $json['status'] = true;
+        $json['result'] = $this->resource($categories, $language->id);
+
+        return response()->json($json);
+    }
+
+    /**
+     * resource alternative function
+     * 
+     * @param collection $data
+     * @return array
+     */
+    public function resource($data, $lang) 
+    {
+        foreach ($data as $category) {
+            $output[] = [
+
+                'id' => $category->id,
+                'name' => $category->lang($lang)->name ?? $category->name,
+                'image' => $category->image,
+
+            ];
+        }
+
+        return $output;
     }
 
     /**

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 
-@section('name', 'Upload Image')
+@section('name', 'Upload Images')
 
 
 @section('content')

@@ -125,6 +125,16 @@ class Category extends Model
 
 	}
 
+    /**
+     * get mutated phone value 
+     * 
+     * @return string
+     */
+    public function getImageAttribute($value) 
+    {
+        return $value ? "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/categories/$value" : '';
+    }
+
 	/**
 	 * get details by language
 	 * 

@@ -23,6 +23,16 @@ class ItemImage extends Model
 	];
 
 	/**
+	 * get full url 
+	 * 
+	 * @return string
+	 */
+	public function url() 
+	{
+		return "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/items/$this->name";
+	}
+
+	/**
 	 * Nest delete
 	 * 
 	 * @return boolean

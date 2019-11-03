@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'phone', 'email', 'password',
+        'first_name', 'last_name', 'phone', 'email', 'password', 'image', 
     ];
 
     /**
@@ -36,6 +36,26 @@ class User extends Authenticatable
     public function getNameAttribute() 
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    /**
+     * get mutated phone value 
+     * 
+     * @return string
+     */
+    public function getPhoneAttribute($value) 
+    {
+        return $value? $value : '';
+    }
+
+    /**
+     * get mutated phone value 
+     * 
+     * @return string
+     */
+    public function getImageAttribute($value) 
+    {
+        return $value? "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/users/$value" : '';
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource
 {
+
     /**
      * Transform the resource into an array.
      *
@@ -18,9 +19,9 @@ class CategoryResource extends JsonResource
 
             'id' => $this->id,
             'name' => $this->details->first()->name,
-            'description' => $this->details->first()->description,
-            'children' => self::collection($this->children),
-
+            'image' => $this->image,
+            'lang' => $this->language,
         ];
     }
+
 }

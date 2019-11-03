@@ -42,6 +42,26 @@ class Item extends Model
 	}
 
 	/**
+	 * Relationship to item_images table
+	 * 
+	 * @return Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function favorites() {
+
+		return $this->hasMany(Favorite::class);
+	}
+
+	/**
+	 * get all items by category id
+	 * 
+	 * @return collection
+	 */
+	static public function allByCategory($id) 
+	{
+		return self::where('category_id', $id)->get();
+	}
+
+	/**
 	 * get default name from category_details table
 	 * 
 	 * @return string
@@ -49,6 +69,17 @@ class Item extends Model
 	public function getNameAttribute() 
 	{
 		return $this->details->first()['name'];
+
+	}
+
+	/**
+	 * get default name from category_details table
+	 * 
+	 * @return string
+	 */
+	public function getDescriptionAttribute() 
+	{
+		return $this->details->first()['description'];
 
 	}
 
@@ -82,7 +113,7 @@ class Item extends Model
 		// return ['test'];
 		return $this->images->pluck('name')->map(function($image) {
 
-			return url( 'storage/items/' . $image );
+			return "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/items/$image";
 
 		})->toArray();
 	}
