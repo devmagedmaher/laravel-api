@@ -40,6 +40,9 @@
                         <div role="tabpanel" class="tab-pane fade in {{ $lang->code == 'en' ? 'active' : ''}}" id="tab-{{ $lang->code }}">
                             <div class="form-group">
                                 Entry Language: {{ $lang->name }} ({{ $lang->code }})
+                                @if ($lang->hasImage())
+                                    <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $lang->image }}" title="{{ $lang->name }}">
+                                @endif
                             </div>
                             <hr>
                             <div class="form-group">

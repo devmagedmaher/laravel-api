@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 Entry Language: {{ $lang->name }} ({{ $lang->code }})
                                 @if ($lang->hasImage())
-                                    <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $lang->image" }}" title="{{ $lang->name }}">
+                                    <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $lang->image }}" title="{{ $lang->name }}">
                                 @endif
                             </div>
                             <hr>
