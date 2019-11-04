@@ -21,6 +21,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/docs', function() { return redirect('/docs/login'); });
 Route::group(['prefix' => '/docs'], function() {
 
 	Route::get('/login', function() { return view('api.login'); });
