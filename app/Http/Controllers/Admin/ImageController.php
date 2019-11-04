@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Item;
 use App\ItemImage;
 use Validator;
@@ -69,7 +70,7 @@ class ImageController extends Controller
         {
             if ($image->validated)
             {
-                $image_name = time() . rand(100, 999) . substr($item->name, 0, 20) . '.' . $image->getClientOriginalExtension();
+                $image_name = time() . rand(100, 900) . Str::random(11) . '.' . $image->getClientOriginalExtension();
 
                 $upload = $image->storeAs('items', $image_name, 's3');
 
@@ -119,40 +120,6 @@ class ImageController extends Controller
         }
 
         return true; 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**

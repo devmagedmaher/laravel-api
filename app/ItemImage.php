@@ -29,7 +29,7 @@ class ItemImage extends Model
 	 */
 	public function url() 
 	{
-		return "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/items/$this->name";
+		return config('filesystems.disks.s3.url') . "/items/$this->name";
 	}
 
 	/**

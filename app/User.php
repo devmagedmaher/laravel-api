@@ -54,19 +54,9 @@ class User extends Authenticatable
      * 
      * @return string
      */
-    public function getPhoneAttribute($value) 
+    public function getImageUrlAttribute($value) 
     {
-        return $value? $value : '';
-    }
-
-    /**
-     * get mutated phone value 
-     * 
-     * @return string
-     */
-    public function getImageAttribute($value) 
-    {
-        return $value? "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/users/$value" : '';
+        return $this->image ? config('filesystems.disks.s3.url') . "/users/$this->image" : null;
     }
 
     /**

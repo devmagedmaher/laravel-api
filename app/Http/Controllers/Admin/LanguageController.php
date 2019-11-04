@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Language;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Validator;
+use App\Language;
 
 class LanguageController extends Controller
 {
@@ -35,6 +36,29 @@ class LanguageController extends Controller
         return view('admin.language.create');
     }
 
+
+    /**
+     * upload Image
+     * 
+     * @param file $image
+     * @return string
+     */
+    public function uploadImage($image) 
+    {
+        if ($image == null) return null;
+
+        $image_name = time() . rand(100, 900) . Str::random(11) . '.' . $image->getClientOriginalExtension();
+
+        $upload = $image->storeAs('languages', $image_name, 's3');
+
+        if (!$upload) 
+        {
+            return back()->withErrors(['image' => 'File upload error.']);
+        }
+
+        return $image_name;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -51,21 +75,14 @@ class LanguageController extends Controller
 
         ]);
 
-        $image = $request->image ? true : false;
-        $imageName = null;
+        $uploaded_image = $this->uploadImage($request->image);
 
-        if ($image) 
+        if ($uploaded_image instanceof \Illuminate\Http\RedirectResponse)
         {
-            $imageName = time(). rand(100,900) . $request->code . '.png';
-            $upload = $request->image->storeAs('languages', $imageName, 's3');
-
-            if (!$upload) 
-            {
-                return back()->withErrors(['image' => 'File upload error.']);
-            }
+            return $uploaded_image;
         }
 
-        Language::add($request->code, $request->name, $imageName);
+        Language::add($request->code, $request->name, $uploaded_image);
 
         return back()->with('status', 'success');
     }
@@ -105,23 +122,17 @@ class LanguageController extends Controller
 
         ]);
 
-        $image = $request->image ? true : false;
-        $imageName = null;
 
-        if ($image) 
+        $uploaded_image = $this->uploadImage($request->image);
+
+        if ($uploaded_image instanceof \Illuminate\Http\RedirectResponse)
         {
-            $imageName = time(). rand(100,900) . $request->code . '.png';
-            $upload = $request->image->storeAs('languages', $imageName, 's3');
-
-            if (!$upload) 
-            {
-                return back()->withErrors(['image' => 'File upload error.']);
-            }
+            return $uploaded_image;
         }
 
         $language->code = $request->code;
         $language->name = $request->name;
-        if ($image) $language->image = $imageName;
+        if ($uploaded_image) $language->image = $uploaded_image;
         $language->save();
 
         return back()->with('status', 'success');
@@ -148,16 +159,14 @@ class LanguageController extends Controller
             return redirect($route)->withErrors($validator);
         }
 
-        $imageName = time() . rand(100,900) . $language->code . '.png';
-        $upload = $request->image->storeAs('languages', $imageName, 's3');
+        $uploaded_image = $this->uploadImage($request->image);
 
-        if (!$upload) 
+        if ($uploaded_image instanceof \Illuminate\Http\RedirectResponse)
         {
-            $route = route('admin.language.edit', ['language' => $language->id]);
-            return redirect($route)->withErrors(['image' => 'File upload error.']);
+            return $uploaded_image;
         }
 
-        $language->image = $imageName;
+        $language->image = $uploaded_image;
         $language->save();
 
         return back();

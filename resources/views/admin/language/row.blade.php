@@ -9,7 +9,7 @@
 			@csrf
 			<label>
 			@if ($language->hasImage())
-				<img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{$language->image }}" title="{{ $language->name }}" class="mouse-pointer flag">
+				<img src="{{$language->image_url }}" title="{{ $language->name }}" class="mouse-pointer flag">
 			@else
 				<span class="btn btn-default btn-xs">upload</span>
 			@endif

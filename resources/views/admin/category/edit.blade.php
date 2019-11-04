@@ -41,7 +41,7 @@
                             <div class="form-group">
                                 Entry Language: {{ $lang->name }} ({{ $lang->code }})
                                 @if ($lang->hasImage())
-                                    <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $lang->image }}" title="{{ $lang->name }}">
+                                    <img src="{{ $lang->image_url }}" title="{{ $lang->name }}">
                                 @endif
                             </div>
                             <hr>
@@ -165,7 +165,7 @@
                         <td>
                         @foreach ($child->languages as $language)
                             @if ($language->image)
-                                <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/languages/{{ $language->image }}" alt="{{ $language->code }}" title="{{ $language->name }}"> 
+                                <img src="{{ $language->image_url }}" alt="{{ $language->code }}" title="{{ $language->name }}"> 
                             @else
                                 [{{ $language->code }}]
                             @endif

@@ -72,6 +72,16 @@ class Language extends Model
 	}
 
 	/**
+	 * get image url
+	 * 
+	 * @return string
+	 */
+	public function getImageUrlAttribute() 
+	{
+		return config('filesystems.disks.s3.url') . "/languages/$this->image";
+	}
+
+	/**
 	 * Check if language has image
 	 * 
 	 * @return int

@@ -4,6 +4,13 @@ $(function(){
 
 	'use strict';
 
+	// replace submit button's text with "loading..."
+	$('button[type=submit]').on('click', function(e) {
+
+		$(this).html('<span class="fa fa-spinner fa-spin"></span> Loading..').prop('disabled', true);
+		this.form.submit();
+	});
+
 	// toggle show/hide next div element
 	$('.toggle-next-element').on('click', function(e) {
 		console.log('test');

@@ -18,7 +18,7 @@
     <td>
     @if ($category->hasImage())
         <div class="img-thumbnail">
-            <img src="http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/categories/{{ $category->image }}" height="30" width="auto">
+            <img src="{{ $category->image_url }}" height="30" width="auto">
         </div>
     @else
         <form action="{{ route('admin.category.upload', ['category' => $category->id]) }}" method="post" enctype="multipart/form-data">

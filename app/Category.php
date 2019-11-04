@@ -130,9 +130,9 @@ class Category extends Model
      * 
      * @return string
      */
-    public function getImageAttribute($value) 
+    public function getImageUrlAttribute() 
     {
-        return $value ? "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/categories/$value" : '';
+        return $this->image ? config('filesystems.disks.s3.url') . "/categories/$this->image" : '';
     }
 
 	/**
@@ -229,12 +229,12 @@ class Category extends Model
 	 */
 	public function trashImage()
 	{
-		$public = "categories";
-		$trash = "trash/categories";
+		$public = 'categories/';
+		$trash = 'trash/categories/';
 
-		if (Storage::exists($public . $this->image))
+		if (Storage::disk('s3')->exists($public . $this->name))
 		{
-			Storage::move($public . $this->image, $trash . $this->image);
+	        Storage::disk('s3')->move($public . $this->name, $trash . $this->name);
 		}
 	}
 }

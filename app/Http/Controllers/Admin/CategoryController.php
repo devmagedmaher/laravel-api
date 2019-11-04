@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use App\Category;
 use App\CategoryDetails;
 use App\Language;
@@ -41,6 +42,28 @@ class CategoryController extends Controller
     }
 
     /**
+     * upload Image
+     * 
+     * @param file $image
+     * @return string
+     */
+    public function uploadImage($image) 
+    {
+        if ($image == null) return null;
+
+        $image_name = time() . rand(100, 900) . Str::random(11) . '.' . $image->getClientOriginalExtension();
+
+        $upload = $image->storeAs('categories', $image_name, 's3');
+
+        if (!$upload) 
+        {
+            return back()->withErrors(['image' => 'File upload error.']);
+        }
+
+        return $image_name;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -58,24 +81,17 @@ class CategoryController extends Controller
 
         ]);
 
-        $image = $request->image ? true : false;
-        $imageName = null;
+        $uploaded_image = $this->uploadImage($request->image);
 
-        if ($image) 
+        if ($uploaded_image instanceof \Illuminate\Http\RedirectResponse)
         {
-            $imageName = time(). rand(100,900) . substr($request->name['en'], 0, 20) . '.' . $request->image->getClientOriginalExtension();
-            $upload = $request->image->storeAs('categories', $imageName, 's3');
-
-            if (!$upload) 
-            {
-                return back()->withErrors(['image' => 'File upload error.']);
-            }
+            return $uploaded_image;
         }
 
         $category = Category::create([
 
             'parent_id' => $request->parent,
-            'image' => $imageName,
+            'image' => $uploaded_image,
 
         ]);
 
@@ -92,20 +108,7 @@ class CategoryController extends Controller
 
         }
 
-        $request->session()->flash('status', 'success');
-
-        return back();
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return back()->with(['status' => 'success']);
     }
 
     /**
@@ -129,7 +132,7 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Category $category
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Category $category)
@@ -145,23 +148,15 @@ class CategoryController extends Controller
 
         ]);
 
-        $image = $request->image ? true : false;
-        $imageName = null;
+        $uploaded_image = $this->uploadImage($request->image);
 
-        if ($image) 
+        if ($uploaded_image instanceof \Illuminate\Http\RedirectResponse)
         {
-            $imageName = time(). rand(100,900) . substr($category->name, 0, 20) . '.' . $request->image->getClientOriginalExtension();
-
-            $upload = $request->image->storeAs('categories', $imageName, 's3');
-
-            if (!$upload) 
-            {
-                return back()->withErrors(['image' => 'File upload error.']);
-            }
+            return $uploaded_image;
         }
 
         $category->parent_id = $request->parent;
-        $category->image = $imageName;
+        $category->image = $uploaded_image;
         $category->save();
 
         foreach ($request->language as $k => $id) {
@@ -190,9 +185,8 @@ class CategoryController extends Controller
             }
         }
 
-        $request->session()->flash('status', 'success');
 
-        return back();
+        return back()->with(['status' => 'success']);
     }
 
     /**
@@ -208,15 +202,14 @@ class CategoryController extends Controller
 
         ]);
 
-        $imageName = time(). rand(100,900) . substr($category->name, 0, 20) . '.' . $request->image->getClientOriginalExtension();
-        $upload = $request->image->storeAs('categories', $imageName, 's3');
+        $uploaded_image = $this->uploadImage($request->image);
 
-        if (!$upload) 
+        if ($uploaded_image instanceof \Illuminate\Http\RedirectResponse)
         {
-            return redirect()->route('admin.category.edit', ['category' => $category->id])->withErrors(['image' => 'File upload error.']);
+            return $uploaded_image;
         }
 
-        $category->image = $imageName;
+        $category->image = $uploaded_image;
         $category->save();
 
         return back();
