@@ -86,7 +86,7 @@ class RegisterController extends Controller
         $values['last_name'] = $data['last_name'];
         if (isset($data['phone']) && $data['phone'] != null) $values['phone'] = $data['phone'];
         $values['email'] = $data['email'];
-        $values['password'] = $data['password'];
+        $values['password'] = Hash::make($data['password']);
 
         return User::create($values);
     }
