@@ -54,7 +54,7 @@ class CategoryController extends Controller
             'name.*' => 'required|string|min:3',
             'description.*' => 'required|string|min:10',
             'parent' => 'nullable|numeric',
-            'image' => 'nullable|bail|image|mimes:jpg,jpgeg,png|max:500',
+            'image' => 'nullable|bail|image|mimes:jpg,jpeg,png|max:500',
 
         ]);
 
@@ -141,7 +141,7 @@ class CategoryController extends Controller
             'name.*' => 'required|string|min:3',
             'description.*' => 'required|string|min:10',
             'parent' => 'nullable|numeric',
-            'image' => 'nullable|bail|image|mimes:jpg,jpgeg,png|max:500',
+            'image' => 'nullable|bail|image|mimes:jpg,jpeg,png|max:500',
 
         ]);
 

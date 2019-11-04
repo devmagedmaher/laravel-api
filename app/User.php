@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Favorite;
 
 class User extends Authenticatable
 {
@@ -27,6 +28,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * get all favorites
+     * 
+     * @return relationship
+     */
+    public function favorites() 
+    {
+        return $this->hasMany(Favorite::class);
+    }
 
     /**
      * get full name 

@@ -24,31 +24,35 @@ class RegisterController extends Controller
 
         if ($validator->fails()) 
         {
-        	$json['msg'] = 'Registration failed';
-        	$json['status'] = false;
-        	$json['result'] = ['errors' => $validator->errors()];
+	        return response()->json([
 
-	        return response()->json($json);
+                'msg' => 'Registration failed.',
+                'status' => false,
+                'result' => [$validator->errors()],
+
+            ], 400);
         }
 
-        $imageUploaded = $this->upload($request->image);
+        $created_user = $this->create($request->all());
 
-        if ($imageUploaded === false) 
+        if (!$created_user) 
         {
-        	$json['msg'] = 'File upload failed';
-        	$json['status'] = false;
-        	$json['result'] = [];
+            return response()->json([
 
-	        return response()->json($json);
+                'msg' => 'Server failed',
+                'status' => false,
+                'result' => [],
+
+            ], 500);
         }
 
-        $user = $this->create($request->all(), $imageUploaded);
+        return response()->json([
 
-        $json['msg'] 	= $user ? 'Registration is successfull.' : 'Database failed';
-        $json['status'] = $user ? true : false;
-        $json['result'] = $user ? [new Resource($user)] : [];
+            'msg' => 'Registration is successfull.',
+            'status' => true,
+            'result' => [new Resource($created_user)],
 
-        return response()->json($json);
+        ], 201);
     }
 
 
@@ -63,31 +67,10 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20|regex:/^[0-9 -+]*$/',
             'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|max:20|regex:/^[0-9 -+]*$/',
             'password' => 'required|string|min:6',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:500',
         ]);
-    }
-
-    /**
-     * Upload user's profile picture
-     *
-     * @param file $image
-     * @return boolean|string
-     */
-    public function upload($image) 
-    {
-    	$imageName = time() . rand(100, 900) . Str::random(10) . '.' . $image->getClientOriginalExtension();
-
-    	$upload = $image->storeAs('users', $imageName, 's3');
-
-    	if (!$upload) 
-    	{
-    		return false;
-    	}
-
-    	return $imageName;
     }
 
     /**
@@ -97,16 +80,15 @@ class RegisterController extends Controller
      * @param  string  $image
      * @return \App\User
      */
-    protected function create(array $data, $image)
+    protected function create(array $data)
     {
-        return User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'password' => Hash::make($data['password']),
-            'image' => $image,
-        ]);
+        $values['first_name'] = $data['first_name'];
+        $values['last_name'] = $data['last_name'];
+        if (isset($data['phone']) && $data['phone'] != null) $values['phone'] = $data['phone'];
+        $values['email'] = $data['email'];
+        $values['password'] = $data['password'];
+
+        return User::create($values);
     }
 
 }

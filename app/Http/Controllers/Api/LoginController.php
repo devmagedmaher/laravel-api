@@ -23,21 +23,36 @@ class LoginController extends Controller
 
         if ($validator->fails()) 
         {
-        	$json['msg'] = 'Login failed';
-        	$json['status'] = false;
-        	$json['result'] = ['errors' => $validator->errors()];
+	        return response()->json([
 
-	        return response()->json($json);
+                'msg' => 'Login failed.',
+                'status' => false,
+                'result' => [$validator->errors()],
+
+            ], 400);
         }
 
 
         $auth = $this->authenticate($request->all());
 
-        $json['msg'] 	= $auth ? 'Login is successfull.' : 'Credentials are incorrect';
-        $json['status'] = $auth ? true : false;
-        $json['result'] = $auth ? [new Resource($auth)] : [];
+        if (!$auth) 
+        {
+            return response()->json([
 
-        return response()->json($json);
+                'msg' => 'Credentials are incorrect.',
+                'status' => false,
+                'result' => [],
+
+            ], 403);
+        }
+
+        return response()->json([
+
+            'msg' => 'Login is successfull.',
+            'status' => true,
+            'result' => [new Resource($auth)],
+
+        ], 200);
     }
 
 

@@ -71,17 +71,6 @@ class LanguageController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Language $language)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -145,7 +134,7 @@ class LanguageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request, Language $language)
+    public function editImage(Request $request, Language $language)
     {
         $validator = Validator::make($request->all(), [
 

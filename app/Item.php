@@ -51,6 +51,11 @@ class Item extends Model
 		return $this->hasMany(Favorite::class);
 	}
 
+	public function isFavorite($user_id) 
+	{
+		return $this->favorites->where('user_id', $user_id)->first() ? true : false;
+	}
+
 	/**
 	 * get all items by category id
 	 * 
@@ -111,11 +116,22 @@ class Item extends Model
 	public function getImagesArrayAttribute() 
 	{
 		// return ['test'];
-		return $this->images->pluck('name')->map(function($image) {
+		return $this->images->map(function($image) {
 
-			return "http://magedmaher-testapi2.s3-eu-west-1.amazonaws.com/items/$image";
+			return $image->url();
 
 		})->toArray();
+	}
+
+	/**
+	 * get image full url
+	 * 
+	 * @return string
+	 */
+	public function getFirstImageAttribute()
+	{
+		$first_image = $this->images->first();
+		return $first_image ? $first_image->url() : null;
 	}
 
 	/**

@@ -18,6 +18,11 @@
                     @admin
                         Go to <a href="{{ route('admin.dashboard')}}">Dashboard</a>.
                     @endadmin
+
+                    <br>
+
+                    Visit API <a href="{{ url('/docs') }}">Documentation</a>.
+
                 </div>
             </div>
         </div>

@@ -73,7 +73,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    E-Commerce API
+                    Simple Application API
                 </div>
 
                 <div class="links">
@@ -83,6 +83,7 @@
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register') }}">Register</a>
                     @endauth
+                    <a href="{{ url('/docs') }}">API Docs</a>
                     {{-- <a href="https://laravel.com/docs">Documentation</a>
                     <a href="https://laracasts.com">Laracasts</a>
                     <a href="https://laravel-news.com">News</a>

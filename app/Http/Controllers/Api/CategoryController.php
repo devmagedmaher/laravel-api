@@ -12,30 +12,56 @@ use App\Language;
 class CategoryController extends Controller
 {
     /**
+     * language ID
+     * 
+     * @var int
+     */
+    private $lang;
+
+
+    /**
+     * initialize parameters values
+     * 
+     * @return void
+     */
+    public function initParams($request)
+    {
+        $lang_code = $request->lang ? $request->lang : 'en';
+
+        $language = Language::where('code', $lang_code)->first();
+
+        $this->lang = $language ? $language->id : 1;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($lang_code = 'en')
+    public function index(Request $request)
     {
-        $language = Language::where('code', $lang_code)->first();
-
-        if (!$language) 
-        {
-            $json['msg'] = 'Incorrect Language provieded.';
-            $json['status'] = false;
-            $json['result'] = [];
-
-            return response()->json($json);
-        }
+        $this->initParams($request);
 
         $categories = Category::parents();
 
-        $json['msg'] = 'Categories retrieved successfully.';
-        $json['status'] = true;
-        $json['result'] = $this->resource($categories, $language->id);
+        if ($categories->isEmpty()) 
+        {
+            return response()->json([
 
-        return response()->json($json);
+                'msg' => 'No categories found.',
+                'status' => false,
+                'result' => [],
+
+            ], 204);
+        }
+
+        return response()->json([
+
+            'msg' => 'Data retrieved successfully.',
+            'status' => true,
+            'result' =>  $this->resource($categories),
+
+        ], 200);
     }
 
     /**
@@ -44,84 +70,18 @@ class CategoryController extends Controller
      * @param collection $data
      * @return array
      */
-    public function resource($data, $lang) 
+    public function resource($data) 
     {
         foreach ($data as $category) {
             $output[] = [
 
                 'id' => $category->id,
-                'name' => $category->lang($lang)->name ?? $category->name,
+                'name' => $category->lang($this->lang)->name ?? $category->name,
                 'image' => $category->image,
 
             ];
         }
 
         return $output;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

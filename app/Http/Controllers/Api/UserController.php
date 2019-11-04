@@ -25,41 +25,63 @@ class UserController extends Controller
 
 		if (!$user) 
 		{
-			$json['msg'] = 'User does not exists.';
-			$json['status'] = false;
-			$json['result'] = [];
+			return response()->json([
 
-			return response()->json($json);
+				'msg' => 'User does not exists.',
+				'status' => false,
+				'result' => [],
+
+			], 404);
 		}
 
 		if ($user->isAdmin()) 
 		{
-			$json['msg'] = 'Permission denied.';
-			$json['status'] = false;
-			$json['result'] = [];
+			return response()->json([
 
-			return response()->json($json);
+				'msg' => 'Premission denied',
+				'status' => false,
+				'result' => [],
+
+			], 403);
 		}
 
 		$validator = $this->validator($request->all());
 
 		if ($validator->fails()) 
 		{
-			$json['msg'] = 'Update failed.';
-			$json['status'] = false;
-			$json['result'] = ['errors' => $validator->errors()];
+			return response()->json([
 
-			return response()->json($json);
+				'msg' => 'Update failed.',
+				'status' => false,
+				'result' => [$validator->errors()],
+
+			], 400);
 		}
 
 		$update = $this->update($user, $request->all());
 
-		$json['msg'] = $update ? 'User updated successfully.' : 'Database failed';
-		$json['status'] = $update ? true : false;
-		$json['result'] = $update ? [new Resource($user)] : [];
+		if (!$update) 
+		{
+			return response()->json([
 
-		return response()->json($json);
+				'msg' => 'Server failed.',
+				'status' => false,
+				'result' => [],
+
+			], 500);
+		}
+
+		return response()->json([
+
+			'msg' => 'User updated successfully.',
+			'status' => true,
+			'result' => [new Resource($user)],
+
+		], 200);
 	}
+
+
+
 
 	/**
 	 * upload image
@@ -69,56 +91,76 @@ class UserController extends Controller
 	 */
 	public function upload(Request $request, $id) 
 	{
-
 		$user = $this->userExists($id);
 
 		if (!$user) 
 		{
-			$json['msg'] = 'User does not exists.';
-			$json['status'] = false;
-			$json['result'] = [];
+			return response()->json([
 
-			return response()->json($json);
+				'msg' => 'User does not exists.',
+				'status' => false,
+				'result' => [],
+
+			], 404);
 		}
 
 		if ($user->isAdmin()) 
 		{
-			$json['msg'] = 'Permission denied.';
-			$json['status'] = false;
-			$json['result'] = [];
+			return response()->json([
 
-			return response()->json($json);
+				'msg' => 'Premission denied',
+				'status' => false,
+				'result' => [],
+
+			], 403);
 		}
 
 		$validator = $this->imageValidator($request->all());
 
 		if ($validator->fails()) 
 		{
-			$json['msg'] = 'Update failed.';
-			$json['status'] = false;
-			$json['result'] = ['errors' => $validator->errors()];
+			return response()->json([
 
-			return response()->json($json);
+				'msg' => 'Update failed.',
+				'status' => false,
+				'result' => [$validator->errors()],
+
+			], 400);
 		}
 
         $imageUploaded = $this->imageUpload($request->image);
 
         if ($imageUploaded === false) 
         {
-        	$json['msg'] = 'File upload failed';
-        	$json['status'] = false;
-        	$json['result'] = [];
+			return response()->json([
 
-	        return response()->json($json);
+				'msg' => 'File Upload failed.',
+				'status' => false,
+				'result' => [],
+
+			], 500);
         }
 
 		$update = $this->update($user, ['image' => $imageUploaded]);
 
-		$json['msg'] = $update ? 'User updated successfully.' : 'Database failed';
-		$json['status'] = $update ? true : false;
-		$json['result'] = $update ? [new Resource($user)] : [];
+		if (!$update) 
+		{
+			return response()->json([
 
-		return response()->json($json);
+				'msg' => 'Server failed.',
+				'status' => false,
+				'result' => [],
+
+			], 500);
+		}
+
+		return response()->json([
+
+			'msg' => 'Image uploaded successfully.',
+			'status' => true,
+			'result' => [],
+
+		], 200);
 	}
 
 	/**
@@ -128,7 +170,7 @@ class UserController extends Controller
 	 */
 	public function userExists($id) 
 	{
-		return User::where('id', '=', $id)->get()->first();
+		return User::where('id', '=', $id)->first();
 	}
 
     /**

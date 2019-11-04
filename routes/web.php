@@ -21,6 +21,20 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::group(['prefix' => '/docs'], function() {
+
+	Route::get('/login', function() { return view('api.login'); });
+	Route::get('/register', function() { return view('api.register'); });
+	Route::get('/edit-profile', function() { return view('api.edit-profile'); });
+	Route::get('/upload-profile-picture', function() { return view('api.upload-profile-picture'); });
+	Route::get('/categories', function() { return view('api.categories'); });
+	Route::get('/items', function() { return view('api.items'); });
+	Route::get('/item-details', function() { return view('api.item-details'); });
+	Route::get('/favorites', function() { return view('api.favorites'); });
+	Route::get('/add-favorite', function() { return view('api.add-favorite'); });
+	Route::get('/remove-favorite', function() { return view('api.remove-favorite'); });
+
+});
 
 Route::get('/admin', function() {
 
@@ -62,13 +76,13 @@ Route::middleware(['auth', 'admin'])->group(function() {
 	Route::delete('/admin/image/{image}'	, 'Admin\ImageController@destroy'	)->name('admin.image.delete');
 
 
-	Route::get('/admin/languages'						, 'Admin\LanguageController@index'	)->name('admin.language.view'	);
-	Route::get('/admin/language/create'					, 'Admin\LanguageController@create'	)->name('admin.language.create'	);
-	Route::post('/admin/language'						, 'Admin\LanguageController@store'	)->name('admin.language.add'	);
-	Route::get('/admin/language/{language}/edit'		, 'Admin\LanguageController@edit'	)->name('admin.language.edit'	);
-	Route::patch('/admin/language/{language}'			, 'Admin\LanguageController@update'	)->name('admin.language.update'	);
-	Route::delete('/admin/language/{language}'			, 'Admin\LanguageController@destroy')->name('admin.language.delete'	);
-	Route::patch('/admin/language/{language}/upload'	, 'Admin\LanguageController@upload'	)->name('admin.language.upload'	);
+	Route::get('/admin/languages'					, 'Admin\LanguageController@index'		)->name('admin.language.view'	);
+	Route::get('/admin/language/create'				, 'Admin\LanguageController@create'		)->name('admin.language.create'	);
+	Route::post('/admin/language'					, 'Admin\LanguageController@store'		)->name('admin.language.add'	);
+	Route::get('/admin/language/{language}/edit'	, 'Admin\LanguageController@edit'		)->name('admin.language.edit'	);
+	Route::patch('/admin/language/{language}'		, 'Admin\LanguageController@update'		)->name('admin.language.update'	);
+	Route::delete('/admin/language/{language}'		, 'Admin\LanguageController@destroy'	)->name('admin.language.delete'	);
+	Route::patch('/admin/language/{language}/image'	, 'Admin\LanguageController@editImage'	)->name('admin.language.upload'	);
 
 
 });

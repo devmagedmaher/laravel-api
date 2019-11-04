@@ -6,46 +6,84 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ItemResource as Resource;
 use App\Item;
+use App\Category;
 use App\Language;
 
 class ItemController extends Controller
 {
     /**
+     * user ID
+     * 
+     * @var int
+     */
+    private $user;
+
+    /**
+     * language ID
+     * 
+     * @var int
+     */
+    private $lang;
+
+
+    /**
+     * initialize parameters values
+     * 
+     * @return void
+     */
+    public function initParams($request)
+    {
+        $lang_code = $request->lang ? $request->lang : 'en';
+
+        $language = Language::where('code', $lang_code)->first();
+
+        $this->lang = $language ? $language->id : 1;
+
+        $this->user = $request->user ? $request->user : null;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $category_id, $lang_code = 'en')
+    public function index(Request $request, $category_id)
     {
-        $language = Language::where('code', $lang_code)->first();
+        $this->initParams($request);
 
-        if (!$language) 
+        $category = Category::find($category_id);
+
+        if (!$category) 
         {
-            $json['msg'] = 'Incorrect Language provieded.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
+                'msg' => 'Category does not exist.',
+                'status' => false,
+                'result' => [],
+
+            ], 404);
         }
 
-        $user_id = $request->user_id ? $request->user_id : null;
+        $items = $category ? $category->items : [];
 
-        if (!$user_id)
+        if ($items->isEmpty()) 
         {
-            $json['msg'] = '`User id` is not provided.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);            
+                'msg' => 'No items found.',
+                'status' => false,
+                'result' => [],
+
+            ], 204);
         }
 
-        $items = Item::allByCategory($category_id);
+        return response()->json([
 
-        $json['msg'] = 'Data retrieved successfully.';
-        $json['status'] = true;
-        $json['result'] = $this->indexResource($items, $language->id, $user_id);
+            'msg' => 'Data retrieved successfully.',
+            'status' => true,
+            'result' => $this->indexResource($items),
 
-        return response()->json($json);
+        ], 200);
     }
 
     /**
@@ -54,16 +92,15 @@ class ItemController extends Controller
      * @param collection $data
      * @return array
      */
-    public function indexResource($data, $lang, $user_id) 
+    public function indexResource($data) 
     {
-        $output = [];
         foreach ($data as $item) {
             $output[] = [
 
                 'id' => $item->id,
-                'name' => $item->lang($lang)->name ?? $item->name,
-                'has_favorite' => $item->favorites->where('user_id', $user_id)->first() ? true : false,
-                'image' => $item->images->first() ? $item->images->first()->url() : '',
+                'name' => $item->lang($this->lang)->name ?? $item->name,
+                'has_favorite' =>  $item->isFavorite($this->user),
+                'image' => $item->first_image ?? '',
 
             ];
         }
@@ -77,46 +114,30 @@ class ItemController extends Controller
      * 
      * @return Json
      */
-    public function show(Request $request, $item_id, $lang_code = 'en') 
+    public function show(Request $request, $item_id) 
     {
-        $language = Language::where('code', $lang_code)->first();
-
-        if (!$language) 
-        {
-            $json['msg'] = 'Incorrect Language provieded.';
-            $json['status'] = false;
-            $json['result'] = [];
-
-            return response()->json($json);
-        }
-
-        $user_id = $request->user_id ? $request->user_id : null;
-
-        if (!$user_id)
-        {
-            $json['msg'] = '`User id` is not provided.';
-            $json['status'] = false;
-            $json['result'] = [];
-
-            return response()->json($json);            
-        }
+        $this->initParams($request);
 
         $item = Item::find($item_id);
 
         if (!$item) 
         {
-            $json['msg'] = 'Item not found.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
+                'msg' => 'Item does not exist.',
+                'status' => false,
+                'result' => [],
+
+            ]);
         }
 
-        $json['msg'] = 'Data retrieved successfully.';
-        $json['status'] = true;
-        $json['result'] = $this->showResource($item, $language->id, $user_id);
+        return response()->json([
 
-        return response()->json($json);
+            'msg' => 'Data retrieved successfully.',
+            'status' => true,
+            'result' => [$this->showResource($item)],
+
+        ]);
     }
 
     /**
@@ -125,14 +146,14 @@ class ItemController extends Controller
      * @param collection $data
      * @return array
      */
-    public function showResource($item, $lang, $user_id) 
+    public function showResource($item) 
     {
         return [
 
             'id' => $item->id,
-            'name' => $item->lang($lang)->name ?? $item->name,
-            'description' => $item->lang($lang)->description ?? $item->description,
-            'has_favorite' => $item->favorites->where('user_id', $user_id)->first() ? true : false,
+            'name' => $item->lang($this->lang)->name ?? $item->name,
+            'description' => $item->lang($this->lang)->description ?? $item->description,
+            'has_favorite' => $item->isFavorite($this->user),
             'images' => $item->images_array,
 
         ];

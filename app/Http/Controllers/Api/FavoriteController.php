@@ -12,38 +12,68 @@ use App\User;
 class FavoriteController extends Controller
 {
     /**
+     * language ID
+     * 
+     * @var int
+     */
+    private $lang;
+
+    /**
+     * initialize parameters values
+     * 
+     * @return void
+     */
+    public function initLang($request)
+    {    
+        $lang_code = $request->lang ? $request->lang : 'en';
+
+        $language = Language::where('code', $lang_code)->first();
+
+        $this->lang = $language ? $language->id : 1;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Item $item, $lang_code = 'en')
+    public function index(Request $request, $user_id)
     {
-        $language = Language::where('code', $lang_code)->first();
+        $this->initLang($request);
 
-        if (!$language) 
+        $user = User::find($user_id);
+
+        if (!$user)
         {
-            $json['msg'] = 'Incorrect Language provieded.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
+                'msg' => 'User does not exists.',
+                'status' => false,
+                'result' => [],
+
+            ], 404);
         }
 
-        $user_id = $request->user_id ? $request->user_id : null;
+        $favorites = $user->favorites;
 
-        if (!$user_id)
+        if ($favorites->isEmpty())
         {
-            $json['msg'] = '`User id` is not provided.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);            
+                'msg' => 'No favorites found.',
+                'status' => false,
+                'result' => [],
+
+            ], 204);
         }
 
-        $favorites = Favorite::where('user_id', $user_id)->get();
+        return response()->json([
 
-        return $this->resource($favorites, $language->id, $user_id);
+            'msg' => 'Data retrieved successfully.',
+            'status' => true,
+            'result' => $this->resource($favorites)
 
+        ], 200);
     }
 
     /**
@@ -52,20 +82,21 @@ class FavoriteController extends Controller
      * @param collection $data
      * @return array
      */
-    public function resource($data, $lang, $user_id) 
-    {        
-        $output = [];
+    public function resource($data) 
+    {
         foreach ($data as $favorite) {
+            $item = $favorite->item;
             $output[] = [
 
                 'id' => $favorite->item_id,
-                'name' => $favorite->item->lang($lang)->name ?? $favorite->item->name,
-                'image' => $favorite->item->images->first() ? $favorite->item->images->first()->url() : '',
+                'name' => $item->lang($this->lang)->name ?? $item->name,
+                'image' => $item->first_image ?? "",
 
             ];
         }
 
-        return $output;    }
+        return $output;
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -73,64 +104,70 @@ class FavoriteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $item_id)
+    public function store(Request $request)
     {
-        $item = Item::find($item_id);
+        $validatorErrors = $this->validator($request);
 
-        if (!$item) 
+        if ($validatorErrors) 
         {
-            $json['msg'] = 'Item not found.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
-        }  
+                'msg' => 'Validation failed.',
+                'status' => false,
+                'result' => [$validatorErrors],
 
-        $user_id = $request->user_id ?? null;
+            ], 400);
+        }
 
-        if (!$user_id) 
+        $finderErrors = $this->finder($request);
+
+        if ($finderErrors) 
         {
-            $json['msg'] = 'User id is not provided.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
-        } 
+                'msg' => 'Add favorite failed.',
+                'status' => false,
+                'result' => [$finderErrors],
 
-        $user = User::find($user_id);
+            ], 404);
+        }
 
-        if (!$user) 
+        if (Favorite::exists($request->user, $request->item)) 
         {
-            $json['msg'] = 'User not found.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
-        } 
+                'msg' => 'Favorite already exists.',
+                'status' => false,
+                'result' => [],
 
-        $exists = Favorite::where('user_id', $user_id)->where('item_id', $item_id)->first();
-
-        if ($exists) 
-        {
-            $json['msg'] = 'User had already added this item to his favorite.';
-            $json['status'] = false;
-            $json['result'] = [];
-
-            return response()->json($json);
-        } 
+            ], 400);
+        }
 
         $create = Favorite::create([
 
-            'user_id' => $user_id,
-            'item_id' => $item_id,
+            'user_id' => $request->user,
+            'item_id' => $request->item,
 
         ]);
 
-        $json['msg'] = $create ? 'User added item to his favorite successfully.' : 'Database failed';
-        $json['status'] = $create ? true : false;
-        $json['result'] = [];
+        if (!$create) 
+        {
+            return response()->json([
 
-        return response()->json($json);
+                'msg' => 'Server failed.',
+                'status' => false,
+                'result' => [],
+
+            ], 500);
+        }
+
+        return response()->json([
+
+            'msg' => 'Favorite added successfully.',
+            'status' => true,
+            'result' => [],
+
+        ], 201);
     }
 
     /**
@@ -139,58 +176,112 @@ class FavoriteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $item_id)
+    public function destroy(Request $request)
     {
-        $item = Item::find($item_id);
+        $validatorErrors = $this->validator($request);
 
-        if (!$item) 
+        if ($validatorErrors) 
         {
-            $json['msg'] = 'Item not found.';
-            $json['status'] = false;
-            $json['result'] = [];
+            return response()->json([
 
-            return response()->json($json);
+                'msg' => 'Validation failed.',
+                'status' => false,
+                'result' => [$validatorErrors],
+
+            ], 400);
+        }
+
+        $finderErrors = $this->finder($request);
+
+        if ($finderErrors) 
+        {
+            return response()->json([
+
+                'msg' => 'Add favorite failed.',
+                'status' => false,
+                'result' => [$finderErrors],
+
+            ], 404);
+        }
+
+        if (!Favorite::exists($request->user, $request->item)) 
+        {
+            return response()->json([
+
+                'msg' => 'Favorite does not exists.',
+                'status' => false,
+                'result' => [],
+
+            ], 404);
+        }
+
+        $delete = Favorite::remove($request->user ,$request->item);
+
+        if (!$delete) 
+        {
+            return response()->json([
+
+                'msg' => 'Server failed.',
+                'status' => false,
+                'result' => [],
+
+            ]);
+        }
+
+        return response()->json([
+
+            'msg' => 'Favorite removed successfully.',
+            'status' => true,
+            'result' => [],
+
+        ]);
+    }
+
+    /**
+     * check if item and user parameters exists
+     * 
+     * @return array
+     */
+    public function validator($request) 
+    {
+        if (!$request->item)
+        {
+            $errors['item'] = 'The `item` parameter is missing.';
+        }
+        else 
+        {
         }  
 
-        $user_id = $request->user_id ?? null;
-
-        if (!$user_id) 
+        if (!$request->user) 
         {
-            $json['msg'] = 'User id is not provided.';
-            $json['status'] = false;
-            $json['result'] = [];
+            $errors['user'] = 'The `user` parameter is missing.';
+        }
 
-            return response()->json($json);
-        } 
+        return isset($errors) ? $errors : null;
+    }
 
-        $user = User::find($user_id);
 
-        if (!$user) 
+    /**
+     * find if user or item exists
+     * 
+     * @return array
+     */
+    public function finder($request) 
+    {
+        $item = Item::find($request->item);
+
+        if (!$item)
         {
-            $json['msg'] = 'User not found.';
-            $json['status'] = false;
-            $json['result'] = [];
+            $errors['item'] = 'Item does not exist.';
+        }
+     
+        $user = User::find($request->user);
 
-            return response()->json($json);
-        } 
-
-        $favorite = Favorite::where('user_id', $user_id)->where('item_id', $item_id)->first();
-
-        if (!$favorite) 
+        if (!$user)
         {
-            $json['msg'] = 'User does not have this item in his favorite.';
-            $json['status'] = false;
-            $json['result'] = [];
+            $errors['user'] = 'User does not exist.';
+        }
 
-            return response()->json($json);
-        } 
-
-        $delete = $favorite->delete();
-
-        $json['msg'] = $delete ? 'User added item to his favorite successfully.' : 'Database failed';
-        $json['status'] = $delete ? true : false;
-        $json['result'] = [];
-
-        return response()->json($json);
+        return isset($errors) ? $errors : null;
     }
 }
