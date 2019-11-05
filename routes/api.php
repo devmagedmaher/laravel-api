@@ -37,6 +37,8 @@ Route::post('user/{user}/image'		, 'Api\UserController@upload'	);
 Route::get('categories'					, 'Api\CategoryController@index');
 
 Route::get('category/{category}/items'	, 'Api\ItemController@index'	);
+Route::get('cat/{category}/items'		, 'Api\ItemController@index'	);
+Route::get('items/{category}/'			, 'Api\ItemController@index'	);
 
 Route::get('item/{item}'				, 'Api\ItemController@show'		);
 

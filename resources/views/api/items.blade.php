@@ -15,6 +15,12 @@
 				<label class="label label-success label-lg pull-right">GET</label>
 				<h3 class="panel-title">Request: <code>/category/{category_id}/items?lang={lang}&user={user}</code></h3>
 				<br><h5>example: <code>/category/3/items?lang=en&user=2</code></h5>
+				<br><br>
+				<h3 class="panel-title">Aliases: <code>/category/{category_id}/items</code>
+				<br><br>&emsp;&emsp;&emsp; <code>/cat/{category_id}/items</code>
+				<br><br>&emsp;&emsp;&emsp; <code>/items/{category_id}/</code>
+
+				</h3>
 			</div>
 			<div class="panel-body">
 				<table class="table table-hover">
