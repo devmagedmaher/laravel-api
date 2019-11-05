@@ -62,6 +62,16 @@ class Language extends Model
 	}
 
 	/**
+	 * get all ordered by id
+	 * 
+	 * @return collection
+	 */
+	static public function allOrderedById() 
+	{
+		return Parent::orderBy('id', 'ASC')->get();
+	}
+
+	/**
 	 * Get total entries
 	 * 
 	 * @return int

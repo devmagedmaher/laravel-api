@@ -35,7 +35,7 @@ class ItemController extends Controller
     {
         return view('admin.item.create', [
 
-            'langs' => Language::all(),
+            'langs' => Language::allOrderedById(),
             'categories' => Category::parents(),
 
         ]);
@@ -103,7 +103,7 @@ class ItemController extends Controller
     {
         return view('admin.item.edit', [
 
-            'langs' => Language::all(),
+            'langs' => Language::allOrderedById(),
             'categories' => Category::parents(),
             'item' => $item
 

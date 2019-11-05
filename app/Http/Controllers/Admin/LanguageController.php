@@ -21,7 +21,7 @@ class LanguageController extends Controller
     {
         return view('admin.language.home', [
 
-            'languages' => Language::all(), 
+            'languages' => Language::allOrderedById(), 
 
         ]);
     }

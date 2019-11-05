@@ -35,7 +35,7 @@ class CategoryController extends Controller
     {
         return view('admin.category.create', [
 
-            'langs' => Language::all(),
+            'langs' => Language::allOrderedById(),
             'categories' => Category::parents(),
 
         ]);
@@ -121,7 +121,7 @@ class CategoryController extends Controller
     {
         return view('admin.category.edit', [
 
-            'langs' => Language::all(),
+            'langs' => Language::allOrderedById(),
             'categories' => Category::where('parent_id', null)->get(),
             'category' => $category,
 
