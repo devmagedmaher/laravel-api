@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use App\CategoryDetails;
 
 class Category extends Model
@@ -132,7 +133,7 @@ class Category extends Model
      */
     public function getImageUrlAttribute() 
     {
-        return $this->image ? config('filesystems.disks.s3.url') . "/categories/$this->image" : '';
+        return $this->image ? Storage::url("categories/$this->image") : null;
     }
 
 	/**
@@ -232,9 +233,9 @@ class Category extends Model
 		$public = 'categories/';
 		$trash = 'trash/categories/';
 
-		if (Storage::disk('s3')->exists($public . $this->name))
+		if (Storage::exists($public . $this->name))
 		{
-	        Storage::disk('s3')->move($public . $this->name, $trash . $this->name);
+	        Storage::move($public . $this->name, $trash . $this->name);
 		}
 	}
 }

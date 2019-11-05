@@ -118,7 +118,7 @@ class Item extends Model
 		// return ['test'];
 		return $this->images->map(function($image) {
 
-			return $image->url();
+			return $image->url;
 
 		})->toArray();
 	}
@@ -131,7 +131,7 @@ class Item extends Model
 	public function getFirstImageAttribute()
 	{
 		$first_image = $this->images->first();
-		return $first_image ? $first_image->url() : null;
+		return $first_image ? $first_image->url : null;
 	}
 
 	/**

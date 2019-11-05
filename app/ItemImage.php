@@ -27,9 +27,9 @@ class ItemImage extends Model
 	 * 
 	 * @return string
 	 */
-	public function url() 
+	public function getUrlAttribute() 
 	{
-		return config('filesystems.disks.s3.url') . "/items/$this->name";
+		return Storage::url("items/$this->name");
 	}
 
 	/**
@@ -54,9 +54,9 @@ class ItemImage extends Model
 		$public = 'items/';
 		$trash = 'trash/items/';
 
-		if (Storage::disk('s3')->exists($public . $this->name))
+		if (Storage::exists($public . $this->name))
 		{
-	        Storage::disk('s3')->move($public . $this->name, $trash . $this->name);
+	        Storage::move($public . $this->name, $trash . $this->name);
 		}
 	}
 }

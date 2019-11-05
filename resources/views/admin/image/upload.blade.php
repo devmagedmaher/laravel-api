@@ -58,7 +58,7 @@
     <div class="panel-body">
     @foreach ($item->images as $image)
     	<div class="img-thumbnail">
-	    	<img src="{{ $image->url() }}">
+	    	<img src="{{ $image->url }}">
     		<span class="fa fa-times submit-next-form mouse-pointer remove" title="delete this images"></span>
 	    	<form action="{{ route('admin.image.delete', ['image' => $image->id]) }}" method="post" style="display: none">
 	    		@method('DELETE')

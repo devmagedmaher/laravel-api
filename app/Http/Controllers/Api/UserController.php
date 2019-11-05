@@ -225,7 +225,7 @@ class UserController extends Controller
     {
     	$imageName = time() . rand(100, 900) . Str::random(10) . '.' . $image->getClientOriginalExtension();
 
-    	$upload = $image->storeAs('users', $imageName, 's3');
+    	$upload = $image->storeAs('users', $imageName);
 
     	if (!$upload) 
     	{

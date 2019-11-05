@@ -53,7 +53,7 @@ class CategoryController extends Controller
 
         $image_name = time() . rand(100, 900) . Str::random(11) . '.' . $image->getClientOriginalExtension();
 
-        $upload = $image->storeAs('categories', $image_name, 's3');
+        $upload = $image->storeAs('categories', $image_name);
 
         if (!$upload) 
         {

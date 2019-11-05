@@ -78,7 +78,7 @@ class Language extends Model
 	 */
 	public function getImageUrlAttribute() 
 	{
-		return config('filesystems.disks.s3.url') . "/languages/$this->image";
+		return $this->image ? Storage::url("languages/$this->image") : null;
 	}
 
 	/**

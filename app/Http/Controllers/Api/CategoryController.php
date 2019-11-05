@@ -77,7 +77,7 @@ class CategoryController extends Controller
 
                 'id' => $category->id,
                 'name' => $category->lang($this->lang)->name ?? $category->name,
-                'image' => $category->image_url,
+                'image' => $category->image_url ?? '',
 
             ];
         }
